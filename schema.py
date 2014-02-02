@@ -4,17 +4,24 @@ import config
 schema = [
     (0, 
      """CREATE TABLE IF NOT EXISTS user (
-           id integer primary key auto_increment,
-           title varchar(255) null,
-           firstname varchar(255) null,
-           lastname varchar(255) null)"""),
+           id int primary key auto_increment,
+           username varchar(255) not null,
+           password varchar(255) not null)"""),
      (1,
       """CREATE TABLE IF NOT EXISTS location (
-           id integer primary key auto_increment,
+           id int primary key auto_increment,
            name varchar(255) not null,
            address text null,
            lat decimal(6, 3) not null,
            lng decimal(6, 3) not null)""",
+    ),
+    (2,
+     """CREATE TABLE IF NOT EXISTS user_location (
+          user_id int not null,
+          location_id int not null,
+          key(user_id),
+          key(location_id),
+          primary key(user_id, location_id))"""
     ),
 ]
 
