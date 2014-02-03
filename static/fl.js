@@ -1,20 +1,5 @@
-// Models
-var Place, User;
-var test_obj;
+var Place, PlaceList;
 $(function() {
-    // Include attrs: username, password
-    User = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                username: "",
-                password: ""
-            };
-        },
-
-        toggle: function() {
-        }
-    })
-    
     // Include attrs: name, address, lat, lng
     // Location is reserved by js
     Place = Backbone.Model.extend({
@@ -31,7 +16,7 @@ $(function() {
         }
     })
 
-    var PlaceList = Backbone.Collection.extend({
+    PlaceList = Backbone.Collection.extend({
         model: Place,
         url: "/api/locations"
     });
@@ -59,26 +44,19 @@ $(function() {
 
     var PlaceListItemView = Backbone.View.extend({
         tagName: "li",
-        template: _.template($('#tpl-location-list-item').html()),
         initialize: function() {
             this.listenTo(this.model, 'change', this.render);
             this.listenTo(this.model, 'destroy', this.close);
         },
         events: {
-            "click .view-map": "toggleDetails"
+            "click .view-map": "displayDetails"
         },
-        toggleDetails: function(e) {
-            if (app.placeView && app.placeView.model === this.model) {
-                app.placeView.close();
-                $(e.target).html('View');
-            } else {
-                app.placeView = new PlaceView({model:this.model});
-                $('#location-info').html(app.placeView.render().el);
-                $(e.target).html('Hide');
-            }
+        displayDetails: function(e) {
+            app.placeView = new PlaceView({model:this.model});
+            $('#location-info').html(app.placeView.render().el);
         },
         render: function(e) {
-            $(this.el).html(this.template(this.model.toJSON()));
+            $(this.el).html(_.template($('#tpl-location-list-item').html(), this.model.toJSON()));
             return this;
         },
         close: function() {
@@ -88,12 +66,11 @@ $(function() {
     });
 
     var PlaceView = Backbone.View.extend({
-        template:_.template($("#tpl-location-details").html()),
         initialize: function() {
             this.listenTo(this.model, 'destroy', this.close);
         },
         render: function(e) {
-            $(this.el).html(this.template(this.model.toJSON()));
+            $(this.el).html(_.template($("#tpl-location-details").html(), this.model.toJSON()));
             map.removeMarker();
             map.placeMarker(null, this.model.get('lat'), this.model.get('lng'));
             return this;
@@ -152,7 +129,6 @@ $(function() {
     });
 
     var PlaceResultView = Backbone.View.extend({
-        template:_.template($('#tpl-place-result').html()),
         events: {
             "click .select-this": "selectThis"
         },
@@ -160,13 +136,12 @@ $(function() {
             $('#location-address').val($(e.target).html());
         },
         render: function(data) {
-            $(this.el).html(this.template(data));
+            $(this.el).html(_.template($('#tpl-place-result').html(), data));
             return this;
         },
     });
     
     var PlaceHeaderView = Backbone.View.extend({
-        template: _.template($('#tpl-location-header').html()),
         events: {
             "click #add-location": "addLocation"
         },
@@ -174,7 +149,7 @@ $(function() {
             this.render();
         },
         render: function(e) {
-            $(this.el).html(this.template());
+            $(this.el).html(_.template($('#tpl-location-header').html()));
             return this;
         },
         addLocation: function(e) {
