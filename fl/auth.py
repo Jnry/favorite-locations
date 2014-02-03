@@ -7,5 +7,5 @@ _salt = _config.get('Auth', 'salt')
 
 def hash(password):
     m = hashlib.md5()
-    m.update(self.password + _salt)
+    m.update(password + _salt)
     return m.hexdigest()

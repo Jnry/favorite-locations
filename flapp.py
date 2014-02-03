@@ -25,7 +25,7 @@ app.config.update(
 @app.route('/')
 def index():
     """Just a generic index page to show."""
-    return render_template('index.html')
+    return render_template("index.html")
 
 
 api = flapi.init_api(app)

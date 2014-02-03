@@ -12,8 +12,8 @@ schema = [
            id int primary key auto_increment,
            name varchar(255) not null,
            address text null,
-           lat decimal(6, 3) not null,
-           lng decimal(6, 3) not null)""",
+           lat double not null,
+           lng double not null)""",
     ),
     (2,
      """CREATE TABLE IF NOT EXISTS user_location (

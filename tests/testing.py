@@ -8,29 +8,29 @@ import database
 import flapi
 import schema
 
-testapp = Flask(__name__)
-testapp.testing = True
-testdb = database.MySQL()
-@testapp.before_request
+_testapp = Flask(__name__)
+_testapp.testing = True
+_api = flapi.init_api(_testapp)
+
+@_testapp.before_request
 def before_request():
-    g.db = testdb
+    g.db = database.MySQL()
     g.db.connect(config.test_db)
 
-@testapp.teardown_request
+@_testapp.teardown_request
 def teardown_request(exception):
     db = getattr(g, 'db', None)
     if db is not None:
         db.close()
+        
 
 class FlTestCase(unittest.TestCase):
     def setUp(self):
-        self.api = flapi.init_api(testapp)
-        self.app = testapp
-        testdb.connect(config.test_db)
-        schema.update_schema(testdb)
-        testdb.close()
+        self.app = _testapp
+        self.db = database.MySQL()
+        self.db.connect(config.test_db)
+        schema.update_schema(self.db)
 
     def tearDown(self):
-        testdb.connect(config.test_db)
-        testdb.truncate_all()
-        testdb.close()
+        self.db.truncate_all()
+        self.db.close()

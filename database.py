@@ -35,6 +35,10 @@ class MySQL:
 
         self._cursor.execute(query)
 
+    def delete(self, table, condition_str):
+        query = "DELETE FROM " + table + " WHERE " + condition_str
+        self._cursor.execute(query)
+
     def fetch_all(self, query, args=None):
         self._cursor.execute(query, args)
         return self._cursor.fetchall()
