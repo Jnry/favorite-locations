@@ -62,13 +62,10 @@ $(function() {
         template: _.template($('#tpl-location-list-item').html()),
         initialize: function() {
             this.listenTo(this.model, 'change', this.render);
+            this.listenTo(this.model, 'destroy', this.close);
         },
         events: {
-            "click .view-map": "toggleDetails",
-            "click .del": "deletePlace"
-        },
-        deletePlace: function(e) {
-            this.model.destroy();
+            "click .view-map": "toggleDetails"
         },
         toggleDetails: function(e) {
             if (app.placeView && app.placeView.model === this.model) {
@@ -93,7 +90,7 @@ $(function() {
     var PlaceView = Backbone.View.extend({
         template:_.template($("#tpl-location-details").html()),
         initialize: function() {
-            this.model.bind("destory", this.close, this);
+            this.listenTo(this.model, 'destroy', this.close);
         },
         render: function(e) {
             $(this.el).html(this.template(this.model.toJSON()));
