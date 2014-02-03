@@ -41,11 +41,10 @@ $(function() {
         tagName: "ul",
         initialize: function() {
             var that = this;
-            this.model.bind("add", function(loc) {
-                $(that.el).append(new PlaceListItemView({model: loc}).render().el);
-            });
+            this.listenTo(this.model, 'add', this.render);
         },
         render: function (e) {
+            $(this.el).empty();
             _.each(this.model.models, function(location) {
                 $(this.el).append(new PlaceListItemView({model:location}).render().el);
             }, this);
@@ -182,10 +181,8 @@ $(function() {
             return this;
         },
         addLocation: function(e) {
-            app.navigate("locations/new", true);
-            return false;
-            //var newPlace = new Place();
-            $('#location-info').html(new PlaceView({model: new Place()}).render().el);
+            app.placeView = new PlaceView({model: new Place()});
+            $('#location-info').html(app.placeView.render().el);
         },
     });
 
